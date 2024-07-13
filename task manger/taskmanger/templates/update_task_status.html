@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Task Status{% endblock %}
+
+{% block content %}
+<h2>Update Status for {{ task.title }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="status">Status:</label>
+        <select class="form-control" name="status" id="status" required>
+            <option value="to_do" {% if task.status == 'to_do' %}selected{% endif %}>To-Do</option>
+            <option value="in_progress" {% if task.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+            <option value="completed" {% if task.status == 'completed' %}selected{% endif %}>Completed</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+{% endblock %}

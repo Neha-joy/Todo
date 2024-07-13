@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+{% if user.role == 'admin' %}
+    <h3>Admin Dashboard</h3>
+    <p>Welcome, {{ user.username }}! Here you can manage all projects and view reports.</p>
+    <a href="{% url 'project_list' %}" class="btn btn-primary">Manage Projects</a>
+    <h4>Project Reports</h4>
+    <!-- Example of how to include reports -->
+    <ul>
+        {% for project in projects %}
+            <li>{{ project.title }} - Lead: {{ project.assigned_to.username }}</li>
+        {% endfor %}
+    </ul>
+
+{% elif user.role == 'team_lead' %}
+    <h3>Team Lead Dashboard</h3>
+    <p>Welcome, {{ user.username }}! Here you can manage your assigned projects and tasks.</p>
+    <h4>Your Projects</h4>
+    <ul>
+        {% for project in projects %}
+            <li>
+                <a href="{% url 'project_detail' project.id %}">{{ project.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <h4>Team Member Reports</h4>
+    <!-- Example of how to include reports -->
+    <ul>
+        {% for task in tasks %}
+            <li>{{ task.title }} - Status: {{ task.get_status_display }} - Assigned to: {{ task.assigned_to.username }}</li>
+        {% endfor %}
+    </ul>
+
+{% elif user.role == 'team_member' %}
+    <h3>Team Member Dashboard</h3>
+    <p>Welcome, {{ user.username }}! Here you can view and update your tasks.</p>
+    <h4>Your Tasks</h4>
+    <ul>
+        {% for task in tasks %}
+            <li>
+                <a href="{% url 'update_task_status' task.id %}">{{ task.title }}</a> - Status: {{ task.get_status_display }}
+            </li>
+        {% endfor %}
+    </ul>
+
+{% else %}
+    <p>Role not recognized. Please contact the administrator.</p>
+{% endif %}
+{% endblock %}
